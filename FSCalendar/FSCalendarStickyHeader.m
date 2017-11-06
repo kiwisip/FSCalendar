@@ -27,26 +27,33 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        
+
         UIView *view;
+        UILabel *monthLabel;
         UILabel *label;
-        
+
         view = [[UIView alloc] initWithFrame:CGRectZero];
         view.backgroundColor = [UIColor clearColor];
         [self addSubview:view];
         self.contentView = view;
-        
+
+        monthLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        monthLabel.textAlignment = NSTextAlignmentLeft;
+        monthLabel.numberOfLines = 0;
+        [_contentView addSubview:monthLabel];
+        self.titleLabel = monthLabel;
+
         label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.textAlignment = NSTextAlignmentCenter;
+        label.textAlignment = NSTextAlignmentRight;
         label.numberOfLines = 0;
         [_contentView addSubview:label];
-        self.titleLabel = label;
-        
+        self.yearLabel = label;
+
         view = [[UIView alloc] initWithFrame:CGRectZero];
         view.backgroundColor = FSCalendarStandardLineColor;
         [_contentView addSubview:view];
         self.bottomBorder = view;
-        
+
         FSCalendarWeekdayView *weekdayView = [[FSCalendarWeekdayView alloc] init];
         [self.contentView addSubview:weekdayView];
         self.weekdayView = weekdayView;
@@ -57,20 +64,19 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
+
     _contentView.frame = self.bounds;
-    
+
     CGFloat weekdayHeight = _calendar.preferredWeekdayHeight;
     CGFloat weekdayMargin = weekdayHeight * 0.1;
     CGFloat titleWidth = _contentView.fs_width;
-    
+    CGFloat offset = 15;
+
     self.weekdayView.frame = CGRectMake(0, _contentView.fs_height-weekdayHeight-weekdayMargin, self.contentView.fs_width, weekdayHeight);
-    
-    CGFloat titleHeight = [@"1" sizeWithAttributes:@{NSFontAttributeName:self.calendar.appearance.headerTitleFont}].height*1.5 + weekdayMargin*3;
-    
-    _bottomBorder.frame = CGRectMake(0, _contentView.fs_height-weekdayHeight-weekdayMargin*2, _contentView.fs_width, 1.0);
-    _titleLabel.frame = CGRectMake(0, _bottomBorder.fs_bottom-titleHeight-weekdayMargin, titleWidth,titleHeight);
-    
+
+    _bottomBorder.frame = CGRectMake(offset, _contentView.fs_height-weekdayHeight-weekdayMargin*2, _contentView.fs_width - offset, 1.0);
+    _titleLabel.frame = CGRectMake(offset, 0, titleWidth, _contentView.frame.size.height - weekdayHeight);
+    _yearLabel.frame = CGRectMake(0, 0, titleWidth - offset, _contentView.frame.size.height - weekdayHeight);
 }
 
 #pragma mark - Properties
@@ -90,6 +96,9 @@
 {
     _titleLabel.font = self.calendar.appearance.headerTitleFont;
     _titleLabel.textColor = self.calendar.appearance.headerTitleColor;
+
+    _yearLabel.font = self.calendar.appearance.headerYearFont;
+    _yearLabel.textColor = self.calendar.appearance.headerYearColor;
     [self.weekdayView configureAppearance];
 }
 
@@ -97,12 +106,11 @@
 {
     _month = month;
     _calendar.formatter.dateFormat = self.calendar.appearance.headerDateFormat;
-    BOOL usesUpperCase = (self.calendar.appearance.caseOptions & 15) == FSCalendarCaseOptionsHeaderUsesUpperCase;
-    NSString *text = [_calendar.formatter stringFromDate:_month];
-    text = usesUpperCase ? text.uppercaseString : text;
-    self.titleLabel.text = text;
+    NSDateComponents *components = [[NSCalendar currentCalendar] components: NSCalendarUnitYear | NSCalendarUnitMonth fromDate: month];
+    NSArray *monthNames = [_calendar.formatter standaloneMonthSymbols];
+
+    self.titleLabel.text = [[monthNames objectAtIndex:(components.month  - 1)] capitalizedString];
+    self.yearLabel.text = [NSString stringWithFormat: @"%ld", (long)[components year]];
 }
 
 @end
-
-

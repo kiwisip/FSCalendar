@@ -30,7 +30,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarSeparators) {
 typedef NS_OPTIONS(NSUInteger, FSCalendarCaseOptions) {
     FSCalendarCaseOptionsHeaderUsesDefaultCase      = 0,
     FSCalendarCaseOptionsHeaderUsesUpperCase        = 1,
-    
+
     FSCalendarCaseOptionsWeekdayUsesDefaultCase     = 0 << 4,
     FSCalendarCaseOptionsWeekdayUsesUpperCase       = 1 << 4,
     FSCalendarCaseOptionsWeekdayUsesSingleUpperCase = 2 << 4,
@@ -62,6 +62,11 @@ typedef NS_OPTIONS(NSUInteger, FSCalendarCaseOptions) {
  * The font of the month text.
  */
 @property (strong, nonatomic) UIFont   *headerTitleFont;
+
+/**
+ * The font of the year text.
+ */
+@property (strong, nonatomic) UIFont   *headerYearFont;
 
 /**
  * The offset of the day text from default position.
@@ -102,6 +107,11 @@ typedef NS_OPTIONS(NSUInteger, FSCalendarCaseOptions) {
  * The color of month header text.
  */
 @property (strong, nonatomic) UIColor  *headerTitleColor;
+
+/**
+ * The color of year header text.
+ */
+@property (strong, nonatomic) UIColor  *headerYearColor;
 
 /**
  * The date format of the month header.
@@ -231,6 +241,3 @@ typedef NS_OPTIONS(NSUInteger, FSCalendarCaseOptions) {
 - (void)invalidateAppearance FSCalendarDeprecated('FSCalendar setNeedsConfigureAppearance');
 
 @end
-
-
-
